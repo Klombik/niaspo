@@ -29,18 +29,18 @@ jobs:
       # Шаг 3: Собрать и запустить контейнеры
       - name: Build and start containers
         run: |
-          docker-compose -f ./docker/docker-compose.yml up --build -d
+          docker-compose -f ./docker-compose.yml up --build -d
 
       # Шаг 4: Проверить состояние контейнеров
       - name: Check services health
         run: |
-          docker-compose -f ./docker/docker-compose.yml ps || true
+          docker-compose -f ./docker-compose.yml ps || true
 
       # Шаг 5: Очистить после тестирования
       - name: Clean up
         if: always()
         run: |
-          docker-compose -f ./docker/docker-compose.yml down
+          docker-compose -f ./docker-compose.yml down
 
 
   test-deploy:
@@ -72,5 +72,5 @@ jobs:
       # Шаг 5: Собрать и загрузить образы в Docker Hub
       - name: Build and push Docker images
         run: |
-          docker-compose -f ./docker/docker-compose.yml build
-          docker-compose -f ./docker/docker-compose.yml push
+          docker-compose -f ./docker-compose.yml build
+          docker-compose -f ./docker-compose.yml push
