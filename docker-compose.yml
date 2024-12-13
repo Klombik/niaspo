@@ -1,0 +1,50 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=mongodb://database:27017/payment_gateway
+      - PORT=8080
+    networks:
+      - my-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8082:80"
+    depends_on:
+      - backend
+    networks:
+       - my-network
+
+  database:
+    build: ./database
+    networks:
+      - my-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8081:80"
+      - "443:443"
+    depends_on:
+      - frontend
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - my-network
+      
+  migrate: # отдельный сервис для миграций
+    build: ./backend
+    depends_on:
+      - database
+    command: npm run migrate
+    networks:
+      - my-network
+      
+networks:
+  my-network:
+    driver: bridge
